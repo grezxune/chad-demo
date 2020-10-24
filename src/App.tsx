@@ -1,13 +1,23 @@
-import React from 'react'
-import logo from './logo.svg'
-import './App.css'
-import { db } from './firebase'
+import React, { useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import { db } from "./firebase";
+import Test from "./Test";
 
-function App() {
+const App = () => {
+  const [data, setData] = useState<any>(null);
+
   const onPress = () => {
-    db.ref('/test').set({ name: 'chad', age: 29 })
-  }
+    db.ref("/test").set({ name: "chad", age: 29 });
+  };
 
+  db.ref("/test").once("value", (val) => {
+    if (data === null) {
+      setData(val.val());
+    }
+  });
+
+  console.log(data);
   return (
     <div className="App">
       <header className="App-header">
@@ -15,13 +25,19 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> HERE WE ARE.
         </p>
+        {data ? <Test name={data?.name} age={data?.age} /> : null}
         <button onClick={onPress}>SET DATA</button>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
+        <a
+          className="App-link"
+          href="https://tommytreb.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Learn React
         </a>
       </header>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
